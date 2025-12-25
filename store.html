@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>فروشگاه آنلاین | WebLegend Store</title>
+    
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        brand: { 
+                            gold: 'var(--brand-color)', // Dynamic Color
+                            goldLight: '#F9E59E',
+                            dark: '#111827',
+                            gray: '#f3f4f6'
+                        } 
+                    },
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --brand-color: #D4AF37; /* Default Gold */
+        }
+        body { background-color: #f8f9fa; color: #1f2937; -webkit-tap-highlight-color: transparent; }
+        
+        .store-header-bg {
+            background: linear-gradient(135deg, #111827 0%, #000000 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        /* Dynamic Header Gradient Overlay */
+        .store-header-bg::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top right, var(--brand-color), transparent 60%);
+            opacity: 0.2; pointer-events: none;
+        }
+        
+        .product-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--brand-color);
+        }
+        
+        .search-box {
+            background: white; border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        .search-box:focus-within {
+            box-shadow: 0 4px 25px rgba(0,0,0,0.1); /* Reduced shadow glow to act neutrally with dynamic color */
+            border: 1px solid var(--brand-color);
+            transform: scale(1.02);
+        }
+        
+        .brand-text { color: var(--brand-color); }
+        .bg-brand { background-color: var(--brand-color); }
+        .border-brand { border-color: var(--brand-color); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+    <div id="page-loader" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-16 h-16 border-4 border-gray-100 border-t-brand-gold rounded-full animate-spin" id="loader-spinner"></div>
+        <p class="mt-4 text-xs font-bold text-gray-400 tracking-widest uppercase">Loading Store...</p>
+    </div>
+
+    <div id="main-app" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-500">
+        
+        <header class="store-header-bg text-white pt-10 pb-20 px-6 rounded-b-[3rem] shadow-2xl z-10 relative">
+            <div class="max-w-md mx-auto text-center relative z-20">
+                
+                <div class="w-28 h-28 mx-auto rounded-full p-1 shadow-lg mb-4 animate-slide-up relative group">
+                    <div class="absolute inset-0 rounded-full border-2 border-brand-gold opacity-50 group-hover:scale-110 transition duration-500"></div>
+                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden relative z-10">
+                        <img id="store-logo" src="img/logo01.png" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="hidden w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                            <i class="fas fa-store text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <h1 class="text-2xl font-black mb-2 animate-slide-up drop-shadow-md" style="animation-delay: 0.1s" id="store-name">فروشگاه اختصاصی</h1>
+                <p class="text-xs text-gray-300 mb-6 animate-slide-up max-w-[80%] mx-auto leading-relaxed opacity-90 font-medium" style="animation-delay: 0.2s" id="store-bio">خوش آمدید! بهترین محصولات را اینجا پیدا کنید.</p>
+                
+                <div class="flex justify-center gap-3 animate-slide-up" style="animation-delay: 0.3s">
+                    <a href="#" id="link-instagram" target="_blank" class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-black transition backdrop-blur-md border border-white/5 hidden">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <button onclick="shareStore()" class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-black transition backdrop-blur-md border border-white/5">
+                        <i class="fas fa-share-alt text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="px-6 -mt-8 relative z-30 max-w-md mx-auto w-full mb-8">
+            <div class="search-box flex items-center px-4 py-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+                <i class="fas fa-search text-gray-400 text-lg ml-2"></i>
+                <input type="text" id="search-input" placeholder="جستجو در بین محصولات..." class="w-full bg-transparent outline-none text-sm font-bold text-gray-700 placeholder-gray-400">
+            </div>
+        </div>
+
+        <main class="flex-1 px-4 pb-12 max-w-4xl mx-auto w-full">
+            <div class="flex justify-between items-center mb-6 px-2">
+                <h2 class="text-lg font-black text-gray-800 border-r-4 border-brand-gold pr-3">ویترین محصولات</h2>
+                <span class="text-[10px] text-gray-500 font-bold bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100" id="products-count">...</span>
+            </div>
+
+            <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                </div>
+
+            <div id="empty-state" class="hidden text-center py-20 opacity-0 transition-opacity duration-500">
+                <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 text-4xl border border-gray-100">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <p class="text-gray-500 font-bold text-sm">هنوز محصولی اضافه نشده است!</p>
+            </div>
+        </main>
+
+        <footer class="bg-white border-t border-gray-100 py-8 text-center text-[10px] text-gray-400 font-bold mt-auto pb-safe">
+            <p class="mb-2 opacity-70">قدرت گرفته از</p>
+            <div class="flex items-center justify-center gap-1.5 text-gray-900 text-sm">
+                <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+                <span class="font-black tracking-widest uppercase">WebLegend</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        const supabaseUrl = 'https://bclbzdvupfiqihcdjltu.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjbGJ6ZHZ1cGZpcWloY2RqbHR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1NjA5NTcsImV4cCI6MjA4MjEzNjk1N30.fiCvS54TEbVZPm_chLcHEo8MAr1AHhP5CKNGbxr02JY'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        let allProducts = [];
+        let sellerId = null;
+
+        async function initStore() {
+            const loader = document.getElementById('page-loader');
+            const mainApp = document.getElementById('main-app');
+            
+            // 1. Get Seller ID
+            const urlParams = new URLSearchParams(window.location.search);
+            sellerId = urlParams.get('id');
+
+            if (!sellerId) {
+                loader.innerHTML = '<div class="text-center px-6"><i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i><p class="text-gray-800 font-bold mb-2">لینک فروشگاه معتبر نیست.</p><p class="text-xs text-gray-400">شناسه فروشنده یافت نشد.</p></div>';
+                return;
+            }
+
+            try {
+                // 2. Fetch Profile & Products in Parallel
+                const [profileRes, productsRes] = await Promise.all([
+                    supabase.from('store_profiles').select('*').eq('user_id', sellerId).single(),
+                    supabase.from('store_products').select('*').eq('user_id', sellerId).eq('is_active', true).order('created_at', { ascending: false })
+                ]);
+
+                // 3. Apply Profile Theme
+                if (profileRes.data) applyStoreIdentity(profileRes.data);
+
+                // 4. Render Products
+                if (productsRes.error) throw productsRes.error;
+                allProducts = productsRes.data || [];
+                renderProducts(allProducts);
+                setupSearch();
+
+                // 5. Show App
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    mainApp.classList.remove('hidden');
+                    setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+                }, 500);
+
+            } catch (err) {
+                console.error(err);
+                // Even if profile fails, show generic store if products load (or vice versa logic)
+                if(allProducts.length > 0) {
+                     loader.style.display = 'none';
+                     mainApp.classList.remove('hidden');
+                     mainApp.classList.remove('opacity-0');
+                } else {
+                    loader.innerHTML = `<div class="text-center px-6"><p class="text-red-500 font-bold">خطا در بارگذاری اطلاعات</p></div>`;
+                }
+            }
+        }
+
+        function applyStoreIdentity(profile) {
+            // Apply Colors
+            if (profile.theme_color) {
+                document.documentElement.style.setProperty('--brand-color', profile.theme_color);
+                // Also color the loader border for consistent feel
+                document.getElementById('loader-spinner').style.borderTopColor = profile.theme_color;
+            }
+
+            // Apply Text & Images
+            if (profile.store_name) {
+                document.getElementById('store-name').innerText = profile.store_name;
+                document.title = `${profile.store_name} | فروشگاه آنلاین`;
+            }
+            if (profile.bio) document.getElementById('store-bio').innerText = profile.bio;
+            if (profile.store_logo) document.getElementById('store-logo').src = profile.store_logo;
+
+            // Apply Socials
+            if (profile.instagram_id) {
+                const instaBtn = document.getElementById('link-instagram');
+                instaBtn.href = `https://instagram.com/${profile.instagram_id.replace('@','')}`;
+                instaBtn.classList.remove('hidden');
+            }
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            const emptyState = document.getElementById('empty-state');
+            const countBadge = document.getElementById('products-count');
+
+            container.innerHTML = '';
+            countBadge.innerText = `${products.length} محصول`;
+
+            if (products.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                setTimeout(() => emptyState.classList.remove('opacity-0'), 100);
+                return;
+            } else {
+                container.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+
+            products.forEach((p, index) => {
+                let imgUrl = 'img/logo01.png';
+                try {
+                    const parsed = JSON.parse(p.image);
+                    if(Array.isArray(parsed) && parsed.length > 0) imgUrl = parsed[0];
+                } catch(e){}
+
+                const price = new Intl.NumberFormat('fa-IR').format(p.price);
+                const delay = index * 0.05; // Staggered animation
+
+                const card = document.createElement('a');
+                card.href = `sale.html?id=${p.id}`; 
+                card.className = 'product-card flex flex-col animate-slide-up block h-full';
+                card.style.animationDelay = `${delay}s`;
+                
+                card.innerHTML = `
+                    <div class="relative w-full aspect-[4/5] bg-gray-50 flex items-center justify-center p-4">
+                        <img src="${imgUrl}" class="w-full h-full object-contain hover:scale-110 transition-transform duration-500" loading="lazy">
+                        ${p.short_description ? `<div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur text-white text-[9px] px-2 py-1 rounded-md shadow-sm">${p.short_description}</div>` : ''}
+                    </div>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h3 class="font-bold text-xs text-gray-800 line-clamp-2 leading-relaxed mb-2 flex-1 h-[2.5em]">${p.name}</h3>
+                        <div class="flex items-center justify-between mt-auto pt-3 border-t border-dashed border-gray-100">
+                            <div class="text-brand-gold font-black text-sm">${price} <span class="text-[9px] text-gray-400 font-normal">ت</span></div>
+                            <div class="w-8 h-8 rounded-full bg-gray-50 text-brand-gold flex items-center justify-center hover:bg-brand-gold hover:text-white transition shadow-sm">
+                                <i class="fas fa-shopping-bag text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function setupSearch() {
+            const input = document.getElementById('search-input');
+            input.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
+                renderProducts(filtered);
+            });
+        }
+
+        window.shareStore = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                Toastify({
+                    text: "لینک فروشگاه کپی شد", duration: 3000, 
+                    style: { background: "#10B981", borderRadius: "10px", fontSize: "12px", fontFamily: "Vazirmatn" }
+                }).showToast();
+            }
+        };
+
+        initStore();
+    </script>
+</body>
+</html>
