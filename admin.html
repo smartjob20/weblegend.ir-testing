@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل فرماندهی | WEB LEGEND GOD MODE</title>
+    <link rel="icon" type="image/png" href="img/logo01.png">
+    
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { gold: '#D4AF37', dark: '#050505', panel: '#0F1115' } },
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: white; }
+        .glass { background: rgba(30, 30, 30, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .sidebar-link.active { background: rgba(212, 175, 55, 0.15); color: #D4AF37; border-right: 3px solid #D4AF37; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        input, select, textarea { background: #080808 !important; border-color: #333 !important; color: white !important; }
+        input:focus { border-color: #D4AF37 !important; ring: 0 !important; }
+        
+        /* Login Overlay Animation */
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; z-index: -1; } }
+        .fade-out { animation: fadeOut 0.5s forwards; }
+    </style>
+</head>
+<body class="font-sans h-screen overflow-hidden flex text-sm">
+
+    <div id="login-gate" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center">
+        <div class="w-full max-w-md p-8 glass rounded-3xl border border-brand-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.1)] text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-yellow-700 rounded-2xl mx-auto flex items-center justify-center text-black font-black text-2xl shadow-lg mb-6">W</div>
+            <h2 class="text-2xl font-black text-white mb-2">ورود به اتاق فرمان</h2>
+            <p class="text-gray-500 mb-8 text-xs">فقط پرسنل مجاز | سیستم مانیتور می‌شود</p>
+            
+            <form id="admin-login-form" class="space-y-4 text-right">
+                <div>
+                    <label class="text-xs text-brand-gold font-bold mr-2">ایمیل مدیریتی</label>
+                    <input type="email" id="admin-email" class="w-full p-4 rounded-xl border border-gray-800 text-left dir-ltr font-mono focus:border-brand-gold transition" placeholder="admin@weblegend.ir" required>
+                </div>
+                <div>
+                    <label class="text-xs text-brand-gold font-bold mr-2">رمز عبور امنیتی</label>
+                    <input type="password" id="admin-password" class="w-full p-4 rounded-xl border border-gray-800 text-left dir-ltr font-mono focus:border-brand-gold transition" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-gold hover:bg-yellow-500 text-black font-black py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
+                    <i class="fas fa-fingerprint mr-2"></i> احراز هویت
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <aside class="w-64 bg-brand-panel border-l border-white/5 flex flex-col z-10 hidden" id="main-sidebar">
+        <div class="p-6 flex items-center gap-3 border-b border-white/5">
+            <div class="w-8 h-8 bg-brand-gold rounded-lg flex items-center justify-center text-black font-bold">W</div>
+            <div>
+                <h1 class="font-black tracking-tighter">WEB <span class="text-brand-gold">LEGEND</span></h1>
+                <p class="text-[9px] text-gray-500 uppercase">Admin Console</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1">
+            <a href="#" onclick="switchTab('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <i class="fas fa-chart-pie w-5"></i> <span>داشبورد کل</span>
+            </a>
+            <a href="#" onclick="switchTab('projects')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <i class="fas fa-rocket w-5"></i> <span>مدیریت پروژه‌ها</span>
+            </a>
+            <a href="#" onclick="switchTab('finance')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <i class="fas fa-coins w-5"></i> <span>امور مالی</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-white/5">
+            <button onclick="adminLogout()" class="flex items-center gap-2 w-full px-4 py-3 text-red-500 hover:bg-red-500/10 rounded-xl transition font-bold">
+                <i class="fas fa-power-off"></i> خروج امن
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-black relative flex flex-col hidden" id="main-content">
+        
+        <header class="h-16 border-b border-white/5 flex justify-between items-center px-8 bg-brand-panel/50 backdrop-blur-md sticky top-0 z-20">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2" id="page-title">
+                <i class="fas fa-chart-pie text-brand-gold"></i> نمای کلی امپراتوری
+            </h2>
+            <div class="flex items-center gap-4">
+                <button onclick="openModal()" class="bg-brand-gold text-black px-4 py-2 rounded-lg font-bold text-xs hover:bg-white transition flex items-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                    <i class="fas fa-plus"></i> پروژه جدید
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            
+            <div id="view-dashboard" class="space-y-8 animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="glass p-6 rounded-2xl border-t-4 border-brand-gold">
+                        <span class="text-gray-500 text-xs uppercase font-bold">درآمد کل (وصول شده)</span>
+                        <div class="text-2xl font-black text-white mt-2" id="stat-revenue">0</div>
+                        <div class="text-xs text-green-500 mt-1 flex items-center gap-1"><i class="fas fa-arrow-up"></i> درآمد واقعی</div>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border-t-4 border-blue-500">
+                        <span class="text-gray-500 text-xs uppercase font-bold">پروژه‌های فعال</span>
+                        <div class="text-2xl font-black text-white mt-2" id="stat-active">0</div>
+                        <div class="text-xs text-blue-500 mt-1">در حال اجرا</div>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border-t-4 border-purple-500">
+                        <span class="text-gray-500 text-xs uppercase font-bold">تعداد مشتریان</span>
+                        <div class="text-2xl font-black text-white mt-2" id="stat-clients">0</div>
+                        <div class="text-xs text-gray-400 mt-1">کل کاربران ثبت شده</div>
+                    </div>
+                    <div class="glass p-6 rounded-2xl border-t-4 border-red-500">
+                        <span class="text-gray-500 text-xs uppercase font-bold">طلب (مانده حساب)</span>
+                        <div class="text-2xl font-black text-white mt-2" id="stat-debt">0</div>
+                        <div class="text-xs text-red-500 mt-1">باید دریافت شود</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4 text-gray-300">روند درآمدزایی</h3>
+                        <canvas id="revenueChart" height="150"></canvas>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold mb-4 text-gray-300">وضعیت پروژه‌ها</h3>
+                        <canvas id="statusChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-projects" class="hidden space-y-6">
+                <div class="glass rounded-2xl overflow-hidden">
+                    <table class="w-full text-right">
+                        <thead class="bg-white/5 text-gray-400 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4">مشتری / پروژه</th>
+                                <th class="p-4">شناسه (ایمیل/موبایل)</th>
+                                <th class="p-4">وضعیت</th>
+                                <th class="p-4">پیشرفت</th>
+                                <th class="p-4">مالی (پرداختی / کل)</th>
+                                <th class="p-4 text-center">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-table-body" class="divide-y divide-white/5 text-sm">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-finance" class="hidden">
+                <div class="text-center text-gray-500 py-20">
+                    <i class="fas fa-coins text-6xl mb-4 opacity-20"></i>
+                    <p>بخش گزارشات پیشرفته مالی (به زودی)</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="project-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#111] w-full max-w-2xl rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h3 class="text-xl font-black text-white" id="modal-title">ثبت پروژه جدید</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="project-form" class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <input type="hidden" id="edit-doc-id">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-xs text-brand-gold font-bold mb-2">ایمیل مشتری (شناسه ورود)</label>
+                        <input type="text" id="inp-phone" class="w-full p-3 rounded-xl dir-ltr text-left font-mono border border-brand-gold/30 focus:border-brand-gold" placeholder="example@gmail.com" required>
+                        <p class="text-[10px] text-gray-500 mt-1">این ایمیل دقیقاً باید با ایمیل لاگین کاربر یکی باشد.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">نام کارفرما</label>
+                        <input type="text" id="inp-client" class="w-full p-3 rounded-xl" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-2">عنوان پروژه</label>
+                        <input type="text" id="inp-project" class="w-full p-3 rounded-xl" required>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h4 class="text-xs font-bold text-blue-400 mb-4 flex items-center gap-2"><i class="fas fa-tasks"></i> وضعیت و پیشرفت</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-2">وضعیت فعلی</label>
+                            <select id="inp-status" class="w-full p-3 rounded-xl">
+                                <option value="بررسی اولیه">بررسی اولیه</option>
+                                <option value="در حال طراحی UI">در حال طراحی UI</option>
+                                <option value="کدنویسی بک‌اند">کدنویسی بک‌اند</option>
+                                <option value="تست و دیباگ">تست و دیباگ</option>
+                                <option value="تکمیل شده">تکمیل شده</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-2">درصد تکمیل</label>
+                            <div class="flex items-center gap-2">
+                                <input type="range" id="inp-progress-slider" min="0" max="100" class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-brand-gold" oninput="document.getElementById('inp-progress').value = this.value">
+                                <input type="number" id="inp-progress" class="w-16 p-2 rounded-lg text-center font-bold text-brand-gold" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h4 class="text-xs font-bold text-green-400 mb-4 flex items-center gap-2"><i class="fas fa-coins"></i> حسابداری</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-2">مبلغ کل (تومان)</label>
+                            <input type="number" id="inp-total" class="w-full p-3 rounded-xl font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-2">دریافتی تا کنون</label>
+                            <input type="number" id="inp-paid" class="w-full p-3 rounded-xl font-mono text-green-400">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="p-6 border-t border-white/10 bg-black/50 flex justify-between">
+                <button type="button" onclick="deleteProject()" id="btn-delete" class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg transition hidden">حذف پروژه</button>
+                <div class="flex gap-3 mr-auto">
+                    <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-white px-4 py-2">انصراف</button>
+                    <button type="button" onclick="saveProject()" class="bg-brand-gold hover:bg-white hover:scale-105 text-black font-black px-8 py-2 rounded-xl transition transform shadow-lg">ذخیره نهایی</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. SUPABASE IMPORTS
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        // 2. CONFIGURATION
+        const supabaseUrl = 'https://bclbzdvupfiqihcdjltu.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjbGJ6ZHZ1cGZpcWloY2RqbHR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1NjA5NTcsImV4cCI6MjA4MjEzNjk1N30.fiCvS54TEbVZPm_chLcHEo8MAr1AHhP5CKNGbxr02JY'
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        // --- GLOBAL STATE ---
+        window.projectsData = [];
+        let revenueChartInstance = null;
+        let statusChartInstance = null;
+
+        // --- AUTH LOGIC (ADMIN) ---
+        async function checkAdminAuth() {
+            const loginGate = document.getElementById('login-gate');
+            const sidebar = document.getElementById('main-sidebar');
+            const content = document.getElementById('main-content');
+
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (user) {
+                // Logged In
+                loginGate.classList.add('hidden');
+                sidebar.classList.remove('hidden');
+                content.classList.remove('hidden');
+                initDashboard();
+            } else {
+                // Logged Out
+                loginGate.classList.remove('hidden');
+                sidebar.classList.add('hidden');
+                content.classList.add('hidden');
+            }
+        }
+        // Initial Check
+        checkAdminAuth();
+
+        // Admin Login Listener
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const btn = e.target.querySelector('button');
+            
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                showToast("ورود ناموفق: " + error.message, "error");
+                btn.innerHTML = originalText;
+            } else {
+                showToast("خوش آمدید فرمانده!", "success");
+                checkAdminAuth();
+            }
+        });
+
+        window.adminLogout = async () => {
+            if(confirm("خروج از پنل مدیریت؟")) {
+                await supabase.auth.signOut();
+                window.location.reload();
+            }
+        };
+
+        // --- DASHBOARD DATA LOGIC ---
+        async function initDashboard() {
+            showToast("در حال دریافت داده‌ها...", "info");
+            
+            try {
+                // دریافت همه پروژه‌ها از Supabase
+                const { data, error } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                window.projectsData = data;
+                renderStats();
+                renderTable();
+                renderCharts();
+
+            } catch (error) {
+                console.error(error);
+                showToast("خطا در دریافت اطلاعات: " + error.message, "error");
+            }
+        }
+
+        function renderStats() {
+            let totalRev = 0;
+            let totalDebt = 0;
+            let activeCount = 0;
+
+            window.projectsData.forEach(p => {
+                totalRev += Number(p.paid_amount || 0);
+                totalDebt += (Number(p.total_price || 0) - Number(p.paid_amount || 0));
+                if(p.progress < 100) activeCount++;
+            });
+
+            // Animate Numbers
+            animateValue("stat-revenue", totalRev, true);
+            animateValue("stat-debt", totalDebt, true);
+            animateValue("stat-clients", window.projectsData.length, false);
+            animateValue("stat-active", activeCount, false);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('projects-table-body');
+            tbody.innerHTML = '';
+
+            window.projectsData.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition group";
+                
+                const percentColor = p.progress === 100 ? 'text-green-500' : 'text-brand-gold';
+                const formatNum = (n) => new Intl.NumberFormat('fa-IR').format(n);
+
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <div class="font-bold text-white">${p.project_name}</div>
+                        <div class="text-xs text-gray-500">${p.client_name}</div>
+                    </td>
+                    <td class="p-4 font-mono text-gray-400 dir-ltr text-right">${p.owner_phone}</td>
+                    <td class="p-4"><span class="bg-white/10 px-2 py-1 rounded text-xs">${p.status}</span></td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-brand-gold" style="width: ${p.progress}%"></div>
+                            </div>
+                            <span class="text-xs font-bold ${percentColor}">${p.progress}%</span>
+                        </div>
+                    </td>
+                    <td class="p-4 font-mono text-xs">
+                        <div class="text-green-400">${formatNum(p.paid_amount)}</div>
+                        <div class="text-gray-600">${formatNum(p.total_price)}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="editProject('${p.id}')" class="text-gray-400 hover:text-white transition bg-gray-800 p-2 rounded-lg hover:bg-brand-gold hover:text-black">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderCharts() {
+            // Revenue Chart
+            const ctxRev = document.getElementById('revenueChart').getContext('2d');
+            const projectNames = window.projectsData.map(p => p.client_name);
+            const revenues = window.projectsData.map(p => p.paid_amount);
+
+            if(revenueChartInstance) revenueChartInstance.destroy();
+
+            revenueChartInstance = new Chart(ctxRev, {
+                type: 'bar',
+                data: {
+                    labels: projectNames,
+                    datasets: [{
+                        label: 'دریافتی (تومان)',
+                        data: revenues,
+                        backgroundColor: '#D4AF37',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Status Chart
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            let completed = window.projectsData.filter(p => p.progress === 100).length;
+            let active = window.projectsData.length - completed;
+
+            if(statusChartInstance) statusChartInstance.destroy();
+
+            statusChartInstance = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['تکمیل شده', 'در حال اجرا'],
+                    datasets: [{
+                        data: [completed, active],
+                        backgroundColor: ['#22c55e', '#3b82f6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } }
+                }
+            });
+        }
+
+        // --- MODAL FUNCTIONS (CRUD) ---
+        window.openModal = () => {
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.getElementById('project-form').reset();
+            document.getElementById('edit-doc-id').value = "";
+            document.getElementById('modal-title').innerText = "ثبت پروژه جدید";
+            document.getElementById('btn-delete').classList.add('hidden');
+        };
+
+        window.closeModal = () => {
+            document.getElementById('project-modal').classList.add('hidden');
+        };
+
+        window.editProject = (id) => {
+            // id is likely a number in Supabase, make sure to handle loose comparison if needed
+            const p = window.projectsData.find(x => x.id == id);
+            if(!p) return;
+
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.getElementById('edit-doc-id').value = id;
+            document.getElementById('modal-title').innerText = "ویرایش پروژه";
+            document.getElementById('btn-delete').classList.remove('hidden');
+
+            document.getElementById('inp-phone').value = p.owner_phone;
+            document.getElementById('inp-client').value = p.client_name;
+            document.getElementById('inp-project').value = p.project_name;
+            document.getElementById('inp-status').value = p.status;
+            document.getElementById('inp-progress').value = p.progress;
+            document.getElementById('inp-progress-slider').value = p.progress;
+            document.getElementById('inp-total').value = p.total_price;
+            document.getElementById('inp-paid').value = p.paid_amount;
+        };
+
+        window.saveProject = async () => {
+            const id = document.getElementById('edit-doc-id').value;
+            const projectData = {
+                owner_phone: document.getElementById('inp-phone').value.trim(),
+                client_name: document.getElementById('inp-client').value,
+                project_name: document.getElementById('inp-project').value,
+                status: document.getElementById('inp-status').value,
+                progress: Number(document.getElementById('inp-progress').value),
+                total_price: Number(document.getElementById('inp-total').value),
+                paid_amount: Number(document.getElementById('inp-paid').value)
+            };
+
+            // ولیدیشن ساده (حذف اجبار +98 برای پشتیبانی از ایمیل)
+            if(!projectData.owner_phone) {
+                showToast("لطفا ایمیل یا شناسه مشتری را وارد کنید", "error");
+                return;
+            }
+
+            try {
+                if(id) {
+                    // Update
+                    const { error } = await supabase
+                        .from('projects')
+                        .update(projectData)
+                        .eq('id', id);
+                    if (error) throw error;
+                    showToast("تغییرات ذخیره شد", "success");
+                } else {
+                    // Insert
+                    const { error } = await supabase
+                        .from('projects')
+                        .insert([projectData]);
+                    if (error) throw error;
+                    showToast("پروژه جدید ایجاد شد", "success");
+                }
+                closeModal();
+                initDashboard(); // Refresh UI
+            } catch (error) {
+                showToast("خطا: " + error.message, "error");
+            }
+        };
+
+        window.deleteProject = async () => {
+            const id = document.getElementById('edit-doc-id').value;
+            if(confirm("آیا از حذف این پروژه مطمئن هستید؟")) {
+                try {
+                    const { error } = await supabase
+                        .from('projects')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+
+                    showToast("پروژه حذف شد", "success");
+                    closeModal();
+                    initDashboard();
+                } catch (error) {
+                    showToast("خطا در حذف: " + error.message, "error");
+                }
+            }
+        }
+
+        // Helper: Switch Tabs
+        window.switchTab = (tabName) => {
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            ['dashboard', 'projects', 'finance'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+            });
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            
+            const titles = { 'dashboard': 'نمای کلی امپراتوری', 'projects': 'مدیریت مشتریان و پروژه‌ها', 'finance': 'خزانه‌داری' };
+            document.getElementById('page-title').innerHTML = `<i class="fas fa-circle text-brand-gold text-[8px] mr-2"></i> ${titles[tabName]}`;
+        }
+
+        // Helper: Number Animation
+        function animateValue(id, end, isCurrency) {
+            const obj = document.getElementById(id);
+            let start = 0;
+            const duration = 1000;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = isCurrency ? new Intl.NumberFormat('fa-IR').format(val) : val;
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Helper: Toast
+        function showToast(msg, type) {
+            Toastify({
+                text: msg,
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                style: {
+                    background: type === 'error' ? "#ef4444" : type === 'success' ? "#22c55e" : "#3b82f6",
+                    borderRadius: "10px",
+                    fontFamily: "Vazirmatn"
+                }
+            }).showToast();
+        }
+    </script>
+</body>
+</html>

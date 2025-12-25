@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شروع همکاری | WEB LEGEND</title>
+    <link rel="icon" type="image/png" href="img/logo01.png">
+    
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            goldLight: '#F9E59E',
+                            dark: '#050505',
+                            charcoal: '#0F1115',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-gold': 'pulse-gold 2s infinite',
+                        'shine': 'shine 3s infinite',
+                    },
+                    keyframes: {
+                        'pulse-gold': {
+                            '0%': { boxShadow: '0 0 0 0 rgba(212, 175, 55, 0.7)' },
+                            '70%': { boxShadow: '0 0 0 15px rgba(212, 175, 55, 0)' },
+                            '100%': { boxShadow: '0 0 0 0 rgba(212, 175, 55, 0)' },
+                        },
+                        shine: {
+                            '0%': { backgroundPosition: '200% center' },
+                            '100%': { backgroundPosition: '-200% center' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; transition: background-color 0.4s ease; }
+        
+        /* Background Noise & Gradient */
+        .bg-noise {
+            position: fixed; inset: 0; z-index: 0; opacity: 0.04; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Input Styling */
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: 1px solid;
+            border-color: #e5e7eb; /* Light mode border */
+            border-radius: 1rem;
+            padding: 1.25rem 1rem 1.25rem 3rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .dark .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .input-field:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+        
+        .input-label {
+            position: absolute; right: 1rem; top: 1.25rem; 
+            color: #6b7280; font-size: 1rem; pointer-events: none; 
+            transition: all 0.3s ease; background-color: transparent; padding: 0 0.5rem;
+        }
+        
+        .input-field:focus ~ .input-label,
+        .input-field:not(:placeholder-shown) ~ .input-label {
+            top: -0.7rem; right: 0.8rem; font-size: 0.75rem; color: #D4AF37;
+            background-color: #fff; /* Light bg */
+            font-weight: bold;
+        }
+        .dark .input-field:focus ~ .input-label,
+        .dark .input-field:not(:placeholder-shown) ~ .input-label {
+             background-color: #0F1115; /* Dark bg */
+        }
+
+        .input-icon {
+            position: absolute; left: 1.2rem; top: 1.4rem; color: #9ca3af; transition: 0.3s;
+        }
+        .input-field:focus ~ .input-icon { color: #D4AF37; }
+
+        /* Card Selection Logic */
+        .checkbox-hidden:checked + .checkbox-label {
+            border-color: #D4AF37;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.1), rgba(0,0,0,0.05));
+        }
+        .checkbox-hidden:checked + .checkbox-label .check-icon {
+            opacity: 1; transform: scale(1);
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 17, 21, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+        }
+
+        /* Accordion */
+        .details-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .details-open { max-height: 800px; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center py-10 px-4 bg-gray-50 text-gray-800 dark:bg-[#000] dark:text-white transition-colors duration-500">
+
+    <div class="bg-noise"></div>
+    
+    <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-gold/5 rounded-full blur-[150px] pointer-events-none dark:opacity-100 opacity-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/5 rounded-full blur-[150px] pointer-events-none dark:opacity-100 opacity-0"></div>
+
+    <header class="w-full max-w-[1000px] flex justify-between items-center mb-8 relative z-20">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 bg-gradient-to-br from-brand-gold to-yellow-700 rounded-xl flex items-center justify-center text-black font-black text-xl shadow-lg group-hover:rotate-6 transition-transform">W</div>
+            <div class="flex flex-col">
+                <span class="text-xl font-black tracking-tighter text-gray-900 dark:text-white leading-none">WEB <span class="text-brand-gold">LEGEND</span></span>
+            </div>
+        </a>
+        
+        <button id="themeToggle" class="w-10 h-10 rounded-full bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 flex items-center justify-center hover:text-brand-gold transition shadow-sm">
+            <i class="fas fa-moon hidden dark:block"></i>
+            <i class="fas fa-sun text-yellow-600 dark:hidden"></i>
+        </button>
+    </header>
+
+    <main class="w-full max-w-[1000px] relative z-10">
+        
+        <div class="mb-10">
+            <div class="flex justify-between items-center relative max-w-2xl mx-auto">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full -z-10"></div>
+                <div id="progress-line" class="absolute top-1/2 right-0 h-1 bg-brand-gold rounded-full -z-0 transition-all duration-700 w-0 shadow-[0_0_10px_#D4AF37]"></div>
+
+                <div id="step-1-ind" class="flex flex-col items-center gap-2 cursor-default group">
+                    <div class="step-circle w-10 h-10 rounded-full bg-brand-gold text-black flex items-center justify-center font-bold text-lg shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-all duration-500 ring-4 ring-gray-50 dark:ring-[#000]">1</div>
+                    <span class="text-xs font-bold text-brand-gold uppercase tracking-wider">هویت</span>
+                </div>
+
+                <div id="step-2-ind" class="flex flex-col items-center gap-2 cursor-default group opacity-50">
+                    <div class="step-circle w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center justify-center font-bold text-lg transition-all duration-500 ring-4 ring-gray-50 dark:ring-[#000]">2</div>
+                    <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">سرویس‌ها</span>
+                </div>
+
+                <div id="step-3-ind" class="flex flex-col items-center gap-2 cursor-default group opacity-50">
+                    <div class="step-circle w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center justify-center font-bold text-lg transition-all duration-500 ring-4 ring-gray-50 dark:ring-[#000]">3</div>
+                    <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">قرارداد</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-[2.5rem] overflow-hidden relative">
+            
+            <div class="h-1 w-full bg-gradient-to-r from-transparent via-brand-gold to-transparent absolute top-0 opacity-50"></div>
+
+            <form id="wizardForm" class="p-6 md:p-12" onsubmit="return false;">
+                
+                <div id="stage-1" class="stage-content transition-all duration-500 ease-in-out">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">خالق این سیستم کیست؟</h2>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">برای شروع ثبت قرارداد رسمی، اطلاعات خود را وارد کنید.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="input-group">
+                            <input type="text" id="name" class="input-field peer" placeholder=" " required />
+                            <label class="input-label">نام و نام خانوادگی</label>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="brand" class="input-field peer" placeholder=" " required />
+                            <label class="input-label">نام برند / فروشگاه</label>
+                            <i class="fas fa-store input-icon"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="phone" class="input-field peer text-left font-mono" placeholder=" " required />
+                            <label class="input-label">شماره همراه</label>
+                            <i class="fas fa-mobile-alt input-icon"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" id="email" class="input-field peer text-left font-mono" placeholder=" " />
+                            <label class="input-label">ایمیل (جهت ارسال نسخه قرارداد)</label>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-8">
+                        <button onclick="changeStage(2)" class="w-full md:w-auto bg-black dark:bg-white text-white dark:text-black font-black px-8 py-4 rounded-xl hover:bg-brand-gold dark:hover:bg-brand-gold hover:text-black transition-all duration-300 shadow-lg flex items-center justify-center gap-3">
+                            انتخاب سرویس‌ها <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="stage-2" class="stage-content hidden opacity-0 translate-y-4 transition-all duration-500">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">زرادخانه خود را انتخاب کنید</h2>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">سرویس‌های مورد نظر را تیک بزنید. می‌توانید چند مورد را همزمان انتخاب کنید.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8" id="packages-container">
+                        </div>
+
+                    <div class="input-group mt-8">
+                        <textarea id="desc" rows="2" class="input-field peer resize-none" placeholder=" "></textarea>
+                        <label class="input-label">یادداشت خاص یا ویژگی سفارشی؟ (اختیاری)</label>
+                        <i class="fas fa-pen input-icon !top-6"></i>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
+                        <button onclick="changeStage(1)" class="text-gray-500 hover:text-gray-900 dark:hover:text-white transition font-bold text-sm px-4">بازگشت</button>
+                        <button onclick="changeStage(3)" class="bg-gradient-to-r from-brand-gold to-yellow-600 text-black font-black px-10 py-4 rounded-xl hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300 flex items-center gap-2">
+                            محاسبه و تنظیم قرارداد
+                            <i class="fas fa-file-signature"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="stage-3" class="stage-content hidden opacity-0 translate-y-4 transition-all duration-500">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">نهایی‌سازی قرارداد</h2>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-white dark:bg-[#0A0C10] border border-gray-200 dark:border-white/10 rounded-2xl p-6 relative overflow-hidden shadow-lg flex flex-col h-full">
+                            <div class="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-800 border-dashed mb-4">
+                                <span class="text-brand-gold text-xs font-bold uppercase tracking-widest">پیش‌فاکتور سیستمی</span>
+                                <span class="text-gray-400 text-xs font-mono" id="invoice-date"></span>
+                            </div>
+                            
+                            <div class="space-y-3 text-sm flex-grow custom-scrollbar overflow-y-auto max-h-[150px]" id="selected-services-list">
+                                </div>
+
+                            <div class="mt-4 bg-brand-gold/10 border border-brand-gold/20 rounded-xl p-4 flex justify-between items-center relative overflow-hidden">
+                                <div class="absolute inset-0 bg-brand-gold/5 animate-pulse"></div>
+                                <div class="flex items-center gap-2 relative z-10">
+                                    <i class="fas fa-hourglass-half text-brand-gold"></i>
+                                    <span class="text-xs text-brand-gold font-bold">تعهد زمان‌بندی</span>
+                                </div>
+                                <span class="text-gray-900 dark:text-white font-bold text-sm relative z-10">تحویل نهایی: ۱۴ روز کاری پس از ثبت</span>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center">
+                                <span class="text-gray-600 dark:text-gray-400">جمع کل قرارداد:</span>
+                                <span class="text-gray-900 dark:text-white font-black text-xl"><span id="total-price-display">0</span> <span class="text-xs font-light text-gray-500">تومان</span></span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-between">
+                            <div class="bg-gray-100 dark:bg-[#111] rounded-2xl p-6 border border-gray-200 dark:border-white/5">
+                                <label class="block text-gray-600 dark:text-gray-400 text-xs mb-4 font-bold">مبلغ پیش‌پرداخت (جهت شروع پروژه)</label>
+                                <div class="flex items-center justify-between mb-6">
+                                    <span class="text-3xl font-black text-brand-gold" id="prepay-display">0</span>
+                                    <span class="text-xs text-gray-500">تومان</span>
+                                </div>
+                                <input type="range" id="prepay-slider" class="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-brand-gold mb-4" step="500000">
+                                <p class="text-[11px] text-gray-500 leading-relaxed bg-white dark:bg-black/20 p-3 rounded-lg border border-gray-200 dark:border-white/5">
+                                    <i class="fas fa-info-circle text-brand-gold ml-1"></i>
+                                    حداقل ۳۰٪ مبلغ کل به عنوان پیش‌پرداخت جهت رزرو زمان تیم فنی و سرورها دریافت می‌شود. مابقی طبق مراحل پیشرفت پروژه (مرحله‌بندی شده) دریافت می‌گردد.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <button id="btn-pay" onclick="simulatePayment()" class="w-full relative overflow-hidden bg-gradient-to-r from-[#D4AF37] via-[#F9E59E] to-[#D4AF37] text-black font-black text-xl py-5 rounded-2xl shadow-[0_0_40px_rgba(212,175,55,0.3)] hover:shadow-[0_0_60px_rgba(212,175,55,0.5)] transition-all duration-300 hover:-translate-y-1 animate-shine bg-[length:200%_auto]">
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                پرداخت امن و امضای قرارداد
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </button>
+                        <p class="text-center text-[10px] text-gray-500">
+                            اتصال به درگاه پرداخت زرین‌پال / شاپرک
+                        </p>
+                    </div>
+                    
+                     <div class="flex justify-start mt-4">
+                        <button onclick="changeStage(2)" class="text-gray-500 hover:text-black dark:hover:text-white transition font-bold text-sm px-4">بازگشت و اصلاح</button>
+                    </div>
+                </div>
+
+                <div id="stage-success" class="hidden py-4">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 mx-auto bg-green-500/10 rounded-full flex items-center justify-center mb-4 relative">
+                            <div class="absolute inset-0 border border-green-500/50 rounded-full animate-ping"></div>
+                            <i class="fas fa-check text-3xl text-green-500"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-gray-900 dark:text-white">تراکنش موفق</h2>
+                        <p class="text-gray-500 text-sm mt-2">به خانواده وب لجند خوش آمدید. رسید زیر قرارداد اولیه شماست.</p>
+                    </div>
+
+                    <div id="receipt-card" class="bg-[#050505] text-white p-0 rounded-3xl max-w-md mx-auto shadow-2xl relative overflow-hidden mb-8 border border-[#333]">
+                        <div class="h-32 bg-gradient-to-br from-brand-gold to-yellow-800 relative overflow-hidden p-6 flex flex-col justify-between">
+                            <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,...')"></div> <div class="flex justify-between items-start relative z-10">
+                                <span class="font-black text-2xl tracking-tighter text-black">WEB LEGEND</span>
+                                <span class="bg-black/20 text-black px-2 py-1 rounded text-[10px] font-bold backdrop-blur-sm uppercase">Official Receipt</span>
+                            </div>
+                            <div class="text-black/70 text-xs font-mono font-bold relative z-10">
+                                ID: <span id="rec-id">TRX-0000</span>
+                            </div>
+                        </div>
+
+                        <div class="relative h-4 bg-[#050505] -mt-2 flex items-center justify-center">
+                            <div class="w-full border-b-2 border-dashed border-gray-800"></div>
+                            <div class="absolute left-[-10px] top-[-10px] w-6 h-6 bg-[#000] rounded-full"></div> <div class="absolute right-[-10px] top-[-10px] w-6 h-6 bg-[#000] rounded-full"></div> </div>
+
+                        <div class="p-8 pt-2">
+                            <div class="flex justify-between items-end border-b border-gray-800 pb-4 mb-4">
+                                <div>
+                                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">کارفرما</div>
+                                    <div class="font-bold text-lg" id="rec-name">-</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">تاریخ</div>
+                                    <div class="font-mono text-brand-gold" id="rec-date">-</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-2">سرویس‌های فعال شده</div>
+                                <ul class="space-y-2" id="rec-services">
+                                    </ul>
+                            </div>
+                            
+                            <div class="mb-6 bg-[#111] p-3 rounded border border-gray-800 flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500 uppercase">زمان تحویل</span>
+                                <span class="text-white text-xs font-bold">۱۴ روز کاری</span>
+                            </div>
+
+                            <div class="bg-[#111] rounded-xl p-4 border border-gray-800 space-y-2">
+                                <div class="flex justify-between text-xs text-gray-400">
+                                    <span>ارزش کل پروژه</span>
+                                    <span id="rec-total">-</span>
+                                </div>
+                                <div class="flex justify-between text-base font-bold text-white">
+                                    <span>پیش‌پرداخت (دریافتی)</span>
+                                    <span class="text-brand-gold" id="rec-paid">-</span>
+                                </div>
+                                <div class="w-full h-px bg-gray-800 my-2"></div>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>مانده تعهد</span>
+                                    <span id="rec-remain">-</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex justify-between items-end">
+                                <div class="h-8 w-32 bg-white/10 rounded flex items-center justify-center text-[8px] text-gray-600 font-mono tracking-[4px]">||| || ||| ||||</div>
+                                <div class="w-12 h-12 bg-white rounded p-1">
+                                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=WebLegendVerified" class="w-full h-full opacity-90">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="downloadReceiptImage()" class="bg-brand-gold text-black font-bold px-8 py-3 rounded-xl hover:bg-white transition shadow-[0_0_20px_rgba(212,175,55,0.4)] flex items-center justify-center gap-2">
+                            <i class="fas fa-download"></i> دانلود رسید (تصویر)
+                        </button>
+                        <a href="index.html" class="bg-transparent border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-white px-8 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition flex items-center justify-center">
+                            بازگشت به سایت
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        
+    </main>
+
+    <script>
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Check Local Storage on Load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+
+        // --- DATA & CONTENT ---
+        const packagesData = [
+            {
+                id: 'p1',
+                title: 'فروشگاه خودکار (Automated)',
+                icon: 'fa-robot',
+                desc: 'سیستمی که وقتی خوابید، می‌فروشد.',
+                price: 12000000,
+                minPrepay: 4000000,
+                features: [
+                    'مشکل: "همیشه باید آنلاین باشم" -> راهکار: ربات فروشنده ۲۴ ساعته',
+                    'مشکل: "فیش فیک" -> راهکار: درگاه پرداخت امن و اتوماتیک',
+                    'پنل مدیریت حرفه‌ای: مدیریت انبار و محصولات بدون نیاز به دانش فنی',
+                    'ارسال خودکار: سیستم پیامک اتوماتیک (کد رهگیری و خوش‌آمدگویی)',
+                    'طراحی روانشناختی: دیزاین اختصاصی متناسب با هویت بصری برند'
+                ]
+            },
+            {
+                id: 'p2',
+                title: 'مدیریت سیستم فروش',
+                icon: 'fa-users-cog',
+                desc: 'ما کارمند حرفه‌ای شما می‌شویم.',
+                price: 5000000, // Monthly Context
+                isMonthly: true,
+                minPrepay: 5000000, // Full month upfront
+                features: [
+                    'مشکل: "وقت ورود محصول ندارم" -> راهکار: دیتا اینتری حرفه‌ای توسط تیم ما',
+                    'مشکل: "نمیدونم چی بفروشم" -> راهکار: تحلیل رفتار مشتری و پیشنهاد محصول',
+                    'کمپین‌های هوشمند: تعریف سناریوهای فروش و کدهای تخفیف شرطی',
+                    'پشتیبانی VIP: مانیتورینگ فنی لحظه‌ای و رفع خطا در کمتر از ۱ ساعت',
+                    'گزارش‌دهی دقیق: ارائه نمودارهای ماهانه رشد فروش و سود'
+                ]
+            },
+            {
+                id: 'p3',
+                title: 'سئو و گوگل (SEO)',
+                icon: 'fab fa-google',
+                desc: 'ترافیک رایگان و هدفمند از گوگل.',
+                price: 7000000, // Monthly
+                isMonthly: true,
+                minPrepay: 3500000,
+                features: [
+                    'مشکل: "کسی سایتم رو نمی‌بینه" -> راهکار: رتبه ۱ در کلمات کلیدی پولساز',
+                    'تحقیق کلمات کلیدی: شکار مشتریانی که آماده کارت‌کشیدن هستند',
+                    'محتوای پادشاه: تولید مقالات یونیک و ارزشمند مطابق الگوریتم گوگل',
+                    'سرعت موشکی: بهینه‌سازی تکنیکال برای لود زیر ۲ ثانیه',
+                    'اعتبار دامنه: لینک‌سازی خارجی قدرتمند و معتبر'
+                ]
+            },
+            {
+                id: 'p4',
+                title: 'وب‌سایت شرکتی و برندینگ',
+                icon: 'fa-building',
+                desc: 'ویترین لوکس و افزایش اعتبار برند.',
+                price: 8000000,
+                minPrepay: 3000000,
+                features: [
+                    'مشکل: "مشتری اعتماد نمی‌کنه" -> راهکار: داشتن پایگاه رسمی و اینماد',
+                    'پورتفولیو حرفه‌ای: نمایش لوکس نمونه‌کارها و پروژه‌های انجام شده',
+                    'لید جنریشن: فرم‌های هوشمند دریافت اطلاعات تماس مشتری',
+                    'طراحی تعاملی: استفاده از انیمیشن‌های مدرن (GSAP/AOS) برای تاثیرگذاری',
+                    'ارتباط مستقیم: اتصال به چت آنلاین واتساپ و تلگرام'
+                ]
+            }
+        ];
+
+        // --- RENDER PACKAGES (GRID 2x2) ---
+        const pkgContainer = document.getElementById('packages-container');
+        
+        packagesData.forEach(pkg => {
+            const priceLabel = pkg.isMonthly ? 'تومان / ماهانه' : 'تومان';
+            const cardHTML = `
+                <div class="relative group h-full">
+                    <input type="checkbox" id="${pkg.id}" value="${pkg.id}" class="checkbox-hidden hidden" onchange="updatePricing()">
+                    <label for="${pkg.id}" class="checkbox-label block h-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] p-5 rounded-2xl transition-all duration-300 hover:border-brand-gold/50 hover:shadow-lg cursor-pointer relative overflow-hidden">
+                        
+                        <div class="absolute inset-0 bg-brand-gold/5 opacity-0 check-icon transition-opacity pointer-events-none"></div>
+
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-brand-gold text-2xl">
+                                <i class="${pkg.icon.includes('fab') ? pkg.icon : 'fas ' + pkg.icon}"></i>
+                            </div>
+                            <div class="w-6 h-6 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center check-icon opacity-20 transition-all scale-50 bg-brand-gold text-black border-none">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-gray-900 dark:text-white font-black text-lg mb-1 relative z-10">${pkg.title}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs leading-relaxed mb-4 min-h-[2.5em] relative z-10">${pkg.desc}</p>
+
+                        <div class="border-t border-gray-100 dark:border-white/5 pt-3 flex justify-between items-center relative z-10">
+                            <span class="text-brand-gold text-sm font-black">${pkg.price.toLocaleString('fa-IR')} <span class="text-[9px] text-gray-400 font-light">${priceLabel}</span></span>
+                            <button onclick="toggleDetails(event, '${pkg.id}-details')" class="text-[10px] text-gray-500 dark:text-gray-400 hover:text-brand-gold flex items-center gap-1 transition-colors bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-lg border border-transparent hover:border-brand-gold/30">
+                                جزئیات فنی <i class="fas fa-chevron-down transition-transform"></i>
+                            </button>
+                        </div>
+
+                        <div id="${pkg.id}-details" class="details-content w-full relative z-10">
+                            <div class="mt-4 pt-4 border-t border-dashed border-gray-200 dark:border-white/10">
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">استراتژی اجرایی:</div>
+                                <ul class="space-y-3">
+                                    ${pkg.features.map(f => {
+                                        if(f.includes('راهکار:')) {
+                                            const parts = f.split('->');
+                                            return `
+                                            <li class="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border-l-2 border-brand-gold text-[11px]">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <i class="fas fa-bolt text-brand-gold"></i>
+                                                    <span class="text-gray-500 dark:text-gray-400 line-through decoration-red-500/50">${parts[0].replace('مشکل:', '').trim()}</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <i class="fas fa-check-circle text-green-500"></i>
+                                                    <span class="text-gray-900 dark:text-white font-bold">${parts[1].replace('راهکار:', '').trim()}</span>
+                                                </div>
+                                            </li>`;
+                                        }
+                                        return `<li class="flex gap-3 items-start text-[11px] text-gray-600 dark:text-gray-300 px-2">
+                                            <i class="fas fa-circle text-[4px] mt-2 text-brand-gold"></i>
+                                            <span>${f}</span>
+                                        </li>`
+                                    }).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            `;
+            pkgContainer.innerHTML += cardHTML;
+        });
+
+        // --- LOGIC FUNCTIONS ---
+
+        function toggleDetails(e, id) {
+            e.preventDefault(); e.stopPropagation();
+            const el = document.getElementById(id);
+            const btn = e.currentTarget;
+            const icon = btn.querySelector('i');
+            
+            if (el.classList.contains('details-open')) {
+                el.classList.remove('details-open');
+                icon.style.transform = 'rotate(0deg)';
+                btn.classList.remove('text-brand-gold', 'bg-brand-gold/10');
+            } else {
+                el.classList.add('details-open');
+                icon.style.transform = 'rotate(180deg)';
+                btn.classList.add('text-brand-gold', 'bg-brand-gold/10');
+            }
+        }
+
+        let selectedPackages = [];
+        let totalPrice = 0;
+        let minPrepayTotal = 0;
+
+        function updatePricing() {
+            const checkboxes = document.querySelectorAll('.checkbox-hidden:checked');
+            selectedPackages = [];
+            totalPrice = 0;
+            minPrepayTotal = 0;
+
+            checkboxes.forEach(chk => {
+                const pkg = packagesData.find(p => p.id === chk.value);
+                if(pkg) {
+                    selectedPackages.push(pkg);
+                    totalPrice += pkg.price;
+                    minPrepayTotal += pkg.minPrepay;
+                }
+            });
+        }
+
+        function updateStage3UI() {
+            const listContainer = document.getElementById('selected-services-list');
+            listContainer.innerHTML = '';
+            selectedPackages.forEach(pkg => {
+                const suffix = pkg.isMonthly ? '(ماهانه)' : '';
+                listContainer.innerHTML += `
+                    <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded transition">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                            <span class="text-gray-700 dark:text-gray-300">${pkg.title}</span>
+                        </div>
+                        <span class="text-gray-900 dark:text-white font-mono font-bold text-xs">${pkg.price.toLocaleString('fa-IR')} ${suffix}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('total-price-display').innerText = totalPrice.toLocaleString('fa-IR');
+            document.getElementById('invoice-date').innerText = new Date().toLocaleDateString('fa-IR');
+
+            // Slider Logic
+            const slider = document.getElementById('prepay-slider');
+            const display = document.getElementById('prepay-display');
+            
+            slider.min = minPrepayTotal;
+            slider.max = totalPrice;
+            slider.value = minPrepayTotal;
+            display.innerText = minPrepayTotal.toLocaleString('fa-IR');
+
+            slider.oninput = function() {
+                let val = Math.round(this.value / 500000) * 500000;
+                display.innerText = val.toLocaleString('fa-IR');
+            }
+        }
+        
+        function changeStage(stage) {
+            // Validation
+            if (stage === 2) {
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                if (!name || phone.length < 10) {
+                    alert('لطفاً نام و شماره تماس معتبر وارد کنید.');
+                    return;
+                }
+            }
+            if (stage === 3) {
+                updatePricing();
+                if(selectedPackages.length === 0) {
+                    alert('لطفاً حداقل یک سرویس را انتخاب کنید.');
+                    return;
+                }
+                updateStage3UI();
+            }
+            
+            // Hide All
+            document.querySelectorAll('.stage-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('opacity-100', 'translate-y-0');
+                el.classList.add('opacity-0', 'translate-y-4');
+            });
+
+            // Show Target
+            setTimeout(() => {
+                const target = document.getElementById(`stage-${stage}`);
+                target.classList.remove('hidden');
+                void target.offsetWidth; 
+                target.classList.remove('opacity-0', 'translate-y-4');
+                target.classList.add('opacity-100', 'translate-y-0');
+            }, 100);
+
+            // Update Progress Indicators
+            updateProgress(stage);
+        }
+
+        function updateProgress(stage) {
+            const line = document.getElementById('progress-line');
+            // Update line
+            if(stage === 1) line.style.width = '0%';
+            if(stage === 2) line.style.width = '50%';
+            if(stage === 3) line.style.width = '100%';
+
+            // Update Circles
+            for(let i=1; i<=3; i++) {
+                const ind = document.getElementById(`step-${i}-ind`);
+                const circle = ind.querySelector('.step-circle');
+                const label = ind.querySelector('span');
+
+                if(i <= stage) {
+                    ind.classList.remove('opacity-50');
+                    circle.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-500');
+                    circle.classList.add('bg-brand-gold', 'text-black', 'shadow-[0_0_20px_rgba(212,175,55,0.6)]');
+                    label.classList.remove('text-gray-500');
+                    label.classList.add('text-brand-gold');
+                    
+                    if(i < stage) {
+                         circle.innerHTML = '<i class="fas fa-check"></i>'; // Completed
+                    } else {
+                         circle.innerHTML = i; // Current
+                    }
+                } else {
+                    ind.classList.add('opacity-50');
+                    circle.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-500');
+                    circle.classList.remove('bg-brand-gold', 'text-black', 'shadow-[0_0_20px_rgba(212,175,55,0.6)]');
+                    label.classList.add('text-gray-500');
+                    label.classList.remove('text-brand-gold');
+                    circle.innerHTML = i;
+                }
+            }
+        }
+
+        function simulatePayment() {
+            const btn = document.getElementById('btn-pay');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> در حال پردازش بانک...';
+            btn.classList.add('opacity-80', 'cursor-wait');
+            
+            setTimeout(() => {
+                document.getElementById('stage-3').classList.add('hidden');
+                const success = document.getElementById('stage-success');
+                success.classList.remove('hidden');
+                success.classList.add('animate-[fadeIn_1s_ease]');
+                
+                fillReceipt();
+                // Complete progress bar
+                document.getElementById('progress-line').style.width = '100%';
+            }, 2500);
+        }
+
+        function fillReceipt() {
+            const sliderVal = document.getElementById('prepay-slider').value;
+            const paidAmount = Math.round(sliderVal / 500000) * 500000;
+            const trxId = 'TRX-' + Math.floor(1000000 + Math.random() * 9000000);
+            
+            document.getElementById('rec-id').innerText = trxId;
+            document.getElementById('rec-name').innerText = document.getElementById('name').value;
+            document.getElementById('rec-date').innerText = new Date().toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const recList = document.getElementById('rec-services');
+            recList.innerHTML = '';
+            selectedPackages.forEach(p => {
+                 recList.innerHTML += `
+                    <li class="flex justify-between text-sm border-b border-gray-800 border-dashed pb-1">
+                        <span>${p.title}</span>
+                        <span class="font-mono text-gray-400">${p.price.toLocaleString('fa-IR')}</span>
+                    </li>`;
+            });
+            
+            document.getElementById('rec-total').innerText = totalPrice.toLocaleString('fa-IR') + ' تومان';
+            document.getElementById('rec-paid').innerText = paidAmount.toLocaleString('fa-IR') + ' تومان';
+            document.getElementById('rec-remain').innerText = (totalPrice - paidAmount).toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function downloadReceiptImage() {
+            const card = document.getElementById('receipt-card');
+            html2canvas(card, { scale: 2, backgroundColor: '#050505' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'WebLegend-Receipt.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
